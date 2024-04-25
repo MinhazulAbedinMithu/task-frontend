@@ -4,25 +4,13 @@ import { AUTH_API } from "@/apiConfig";
 import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
 
-interface City {
-  _id: string;
-  name: string;
-}
-
-interface School {
-  _id: string;
-  name: string;
-}
-
 const Register: React.FC = () => {
   const [error, setError] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [formInputError, setFormInputError] = useState({
     firstName: "",
-    middleName: "",
     lastName: "",
-    id: "",
     phone: "",
     email: "",
     password: "",
@@ -33,16 +21,14 @@ const Register: React.FC = () => {
     setLoading(true);
 
     const firstName = e.target.firstName.value;
-    const middleName = e.target.middleName.value;
     const lastName = e.target.lastName.value;
 
-    const fullName = [firstName, middleName, lastName]
+    const fullName = [firstName, lastName]
       .filter(Boolean)
       .join(" ");
 
     const formData = {
       fullName: fullName,
-      identity: e.target.id.value,
       email: e.target.email.value,
       password: e.target.password.value,
       phone: e.target.phone.value,
@@ -88,13 +74,13 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-5xl px-2 sm:px-6 lg:px-8">
       <h1 className="text-4xl text-center my-10 font-bold">Register Account</h1>
       <form
         className="flex flex-col justify-center items-center md:w-4/6 w-full gap-4 mx-auto"
         onSubmit={handleSubmit}
       >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
           <label className="block">
             <span className="block text-sm font-medium text-slate-700">
               First Name
@@ -120,32 +106,6 @@ const Register: React.FC = () => {
             />
             <span style={{ color: "red" }} className="block">
               {formInputError.firstName}
-            </span>
-          </label>
-          <label className="block">
-            <span className="block text-sm font-medium text-slate-700">
-              Middle Name
-            </span>
-            <input
-              name="middleName"
-              className="border-2 rounded-md p-2 shadow focus:ring-0 focus:ring-sky-400 focus:outline-none focus:border-sky-400 w-full"
-              type="text"
-              placeholder="Middle name"
-              onInvalid={(e: any) =>
-                setFormInputError({
-                  ...formInputError,
-                  middleName: e.target.validationMessage,
-                })
-              }
-              onInput={(e: any) =>
-                setFormInputError({
-                  ...formInputError,
-                  middleName: "",
-                })
-              }
-            />
-            <span style={{ color: "red" }} className="block">
-              {formInputError.middleName}
             </span>
           </label>
           <label className="block">
@@ -178,24 +138,6 @@ const Register: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-          <label className="block">
-            <span className="block text-sm font-medium text-slate-700">ID</span>
-            <input
-              name="id"
-              className="border-2 rounded-md p-2 shadow focus:ring-0 focus:ring-sky-400 focus:outline-none focus:border-sky-400 w-full"
-              type="text"
-              placeholder="id"
-              maxLength={10}
-              minLength={10}
-              required
-              onInvalid={handleInvalid}
-              onInput={handleInput}
-            />
-            <span style={{ color: "red" }} className="block">
-              {errorMessage}
-            </span>
-          </label>
-
           <label className="block">
             <span className="block text-sm font-medium text-slate-700">
               Phone Number
@@ -234,19 +176,6 @@ const Register: React.FC = () => {
               {formInputError.phone}
             </span>
           </label>
-          {/* <label className="block">
-            <span className="block text-sm font-medium text-slate-700">
-              Another Phone Number
-            </span>
-            <input
-              name="anotherPhone"
-              className="border-2 rounded-md p-2 shadow focus:ring-0 focus:ring-sky-400 focus:outline-none focus:border-sky-400 w-full"
-              type="text"
-              placeholder="Another phone number"
-            />
-          </label> */}
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
           <label className="block">
             <span className="block text-sm font-medium text-slate-700">
               Email
@@ -275,6 +204,20 @@ const Register: React.FC = () => {
               {formInputError.email}
             </span>
           </label>
+          {/* <label className="block">
+            <span className="block text-sm font-medium text-slate-700">
+              Another Phone Number
+            </span>
+            <input
+              name="anotherPhone"
+              className="border-2 rounded-md p-2 shadow focus:ring-0 focus:ring-sky-400 focus:outline-none focus:border-sky-400 w-full"
+              type="text"
+              placeholder="Another phone number"
+            />
+          </label> */}
+        </div>
+        <div className="grid grid-cols-1 gap-4 w-full">
+          
           <label className="block">
             <span className="block text-sm font-medium text-slate-700">
               Password
