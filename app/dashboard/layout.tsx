@@ -54,6 +54,16 @@ const layout = ({
           >
             Analytics
           </Link>
+          <Link
+            href="/dashboard/leaderBoard"
+            className={
+              pathname === "/dashboard/leaderBoard"
+                ? "px-2 py-2 w-full text-black font-bold"
+                : "px-2 py-2 w-full text-gray-700 hover:bg-gray-300"
+            }
+          >
+            Leaderboard
+          </Link>
         </nav>
       </div>
       <div className="w-full md:w-4/5">{children}</div>

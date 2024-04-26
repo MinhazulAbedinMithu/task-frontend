@@ -25,6 +25,8 @@ export const initialTasks = {
       startTime: "09:00",
       endDate: "2024-04-26",
       endTime: "10:00",
+      score: 0,
+      status: "todo",
     },
     {
       title: "Task 2",
@@ -33,6 +35,8 @@ export const initialTasks = {
       startTime: "10:00",
       endDate: "2024-04-26",
       endTime: "11:00",
+      score: 0,
+      status: "todo",
     },
   ],
   inProgress: [
@@ -43,6 +47,8 @@ export const initialTasks = {
       startTime: "11:00",
       endDate: "2024-04-26",
       endTime: "12:00",
+      score: 0,
+      status: "inProgress",
     },
   ],
   done: [
@@ -53,6 +59,8 @@ export const initialTasks = {
       startTime: "13:00",
       endDate: "2024-04-26",
       endTime: "14:00",
+      score: 0,
+      status: "done",
     },
   ],
 };
