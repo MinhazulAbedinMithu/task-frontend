@@ -44,7 +44,7 @@ const ForgotPasswordPage = () => {
     <Suspense fallback={<div>Loading...</div>}>
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <Toaster />
-        <h1 className="text-4xl text-center my-10 font-bold">Login</h1>
+        <h1 className="text-4xl text-center my-10 font-bold">Forgot Password</h1>
         <form
           className="flex flex-col justify-center items-center gap-4"
           onSubmit={handleSubmit}

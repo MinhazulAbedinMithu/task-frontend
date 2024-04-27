@@ -12,7 +12,7 @@ type Task = {
   startTime: string;
   endDate: string;
   endTime: string;
-  score?: number;
+  level?: 1 | 2 | 3;
   status?: "todo" | "inProgress" | "done";
 };
 
@@ -25,7 +25,7 @@ export const initialTasks = {
       startTime: "09:00",
       endDate: "2024-04-26",
       endTime: "10:00",
-      score: 0,
+      score: 1,
       status: "todo",
     },
     {
@@ -35,7 +35,7 @@ export const initialTasks = {
       startTime: "10:00",
       endDate: "2024-04-26",
       endTime: "11:00",
-      score: 0,
+      score: 2,
       status: "todo",
     },
   ],
@@ -47,7 +47,7 @@ export const initialTasks = {
       startTime: "11:00",
       endDate: "2024-04-26",
       endTime: "12:00",
-      score: 0,
+      score: 3,
       status: "inProgress",
     },
   ],
@@ -59,7 +59,7 @@ export const initialTasks = {
       startTime: "13:00",
       endDate: "2024-04-26",
       endTime: "14:00",
-      score: 0,
+      score: 2,
       status: "done",
     },
   ],

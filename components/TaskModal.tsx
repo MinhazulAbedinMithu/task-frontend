@@ -181,19 +181,22 @@ const TaskModal: React.FC<TaskModalProps> = ({
               </div>
               <div className="mb-4">
                 <label
-                  htmlFor="score"
+                  htmlFor="level"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Score
+                  Level
                 </label>
-                <input
-                  type="number"
-                  id="score"
-                  name="score"
-                  defaultValue={formData.score}
+                <select
+                  id="level"
+                  name="level"
+                  defaultValue={formData.level}
                   onChange={handleChange}
                   className="mt-1 p-2 w-full border rounded-md"
-                />
+                >
+                  <option value="1">Easy</option>
+                  <option value="2">Medium</option>
+                  <option value="3">Hard</option>
+                </select>
               </div>
               <div className="mb-4">
                 <label

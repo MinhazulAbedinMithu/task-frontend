@@ -1,34 +1,30 @@
 'use client'
 import GanttChart from '@/components/GanttChart'
+import PieChart from '@/components/PieChart';
+import { initialTasks } from '../myTasks/page';
 
 type Props = {}
 
-const tasks =[
-      {
-        id: 'Task-1',
-        name: "Task 1",
-        start: "2024-04-23",
-        end: "2024-04-26",
-      },
-      {
-        id: 'Task-2',
-        name: "Task 2",
-        start: "2024-04-23",
-        end: "2024-04-26",
-      },
-      {
-        id: 'Task-3',
-        name: "Task 3",
-        start: "2024-04-23",
-        end: "2024-04-26",
-      },
-      {
-        id: 'Task-4',
-        name: "Task 4",
-        start: "2024-04-23",
-        end: "2024-04-26",
-      },
-    ];
+const tasks = [
+  ...initialTasks.todo.map((task, index) => ({
+    id: `Task-${index + 1}`,
+    name: task.title,
+    start: task.startDate,
+    end: task.endDate,
+  })),
+  ...initialTasks.inProgress.map((task, index) => ({
+    id: `Task-${initialTasks.todo.length + index + 1}`,
+    name: task.title,
+    start: task.startDate,
+    end: task.endDate,
+  })),
+  ...initialTasks.done.map((task, index) => ({
+    id: `Task-${initialTasks.todo.length + initialTasks.inProgress.length + index + 1}`,
+    name: task.title,
+    start: task.startDate,
+    end: task.endDate,
+  })),
+];
 
 const page = (props: Props) => {
   return (
@@ -37,6 +33,9 @@ const page = (props: Props) => {
       <h1 className="text-2xl font-bold mb-4">Overview</h1>
       <div className="bg-white rounded-lg shadow-lg p-4">
         <GanttChart tasks={tasks} />
+      </div>
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+        <PieChart tasks={initialTasks} />
       </div>
     </div>
     </div>
