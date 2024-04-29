@@ -64,7 +64,9 @@ const ChatPage: React.FC = () => {
             <div
               key={index}
               className={`mb-2 ${
-                message.userName === authUser.name ? "self-end" : "self-start"
+                message.userName === authUser.name
+                  ? "self-end"
+                  : "self-start flex-row-reverse"
               } flex items-center gap-2`}
             >
               <div
@@ -74,7 +76,7 @@ const ChatPage: React.FC = () => {
               >
                 <span>{message.message}</span>
               </div>
-              <img
+              {/* <img
                 src={
                   //@ts-ignore
                   message.isCurrentUser
@@ -83,7 +85,10 @@ const ChatPage: React.FC = () => {
                 }
                 alt="User"
                 className="w-8 h-8 rounded-full mr-2"
-              />
+              /> */}
+              <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center font-bold uppercase text-white">
+                {message.userName.slice(0, 1)}
+              </div>
             </div>
           ))}
           <div ref={messagesEndRef} />
