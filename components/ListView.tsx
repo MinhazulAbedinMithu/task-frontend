@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import TaskModal from "./TaskModal";
-import { log } from "util";
+import { TASK_API } from "@/apiConfig";
+import Cookies from "js-cookie";
 
 type Task = {
   title: string;
@@ -28,17 +29,32 @@ type ListViewProps = {
 
 const ListView: React.FC<any> = ({ tasks, onDelete, onEdit, setTasks }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [selectedTask, setSelectedTask] = useState<any>(null);
   const [selectedColumn, setSelectedColumn] = useState<keyof any | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const cookieToken = Cookies.get("token") || "{}";
   const [customTasks, setCustomTasks] = useState<any>({
     todo: [],
     inProgress: [],
     done: [],
   });
 
-  console.log({ customTasks, tasks });
+  // console.log({ customTasks, tasks });
 
+  useEffect(() => {
+    const fetchTasks = async () => {
+      const res = await fetch(`${TASK_API.ALL}`, {
+        headers: {
+          Authorization: `${cookieToken}`,
+        },
+      });
+      const apiTasks = await res.json();
+      // console.log(apiTasks);
+      setTasks(apiTasks);
+    };
+    fetchTasks();
+    //@ts-ignore
+  }, [selectedTask]);
   useEffect(() => {
     let todoList = [];
     let inProgressList = [];
@@ -76,7 +92,7 @@ const ListView: React.FC<any> = ({ tasks, onDelete, onEdit, setTasks }) => {
     endTime: string
   ) => {
     const startDateTime = new Date(`${startDate}T${startTime}`);
-    const endDateTime = new Date(`${endDate.split("T")[0]}T${endTime}`);
+    const endDateTime = new Date(`${endDate?.split("T")[0]}T${endTime}`);
     const currentTime = new Date();
 
     if (currentTime > endDateTime) {
@@ -108,40 +124,32 @@ const ListView: React.FC<any> = ({ tasks, onDelete, onEdit, setTasks }) => {
   };
 
   const handleEditClick = (task: Task, column: any, index: number) => {
+    // console.log(task);
+
     setSelectedTask(task);
     setSelectedColumn(column);
     setSelectedIndex(index);
   };
 
-  const handleEditTask = (updatedTask: Task) => {
-    if (selectedColumn !== null && selectedIndex !== null) {
-      const updatedTasks = { ...tasks };
+  const handleEditTask = async (updatedTask: Task) => {
+    if (selectedColumn !== null && selectedIndex !== null && selectedTask) {
+      const res = await fetch(TASK_API.UPDATE(selectedTask._id), {
+        method: "PATCH",
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `${cookieToken}`,
+        },
+        body: JSON.stringify(updatedTask),
+      });
+      const data = await res.json();
+      // console.log(data);
 
-      //@ts-ignore
-      updatedTasks[selectedColumn] = tasks[selectedColumn].filter(
-        //@ts-ignore
-        (_, idx): any => idx !== selectedIndex
-      );
-
-      const newStatus = updatedTask.status || selectedColumn;
-
-      if (newStatus !== selectedColumn) {
-        if (updatedTasks[newStatus]) {
-          updatedTasks[newStatus].push(updatedTask);
-        }
-      } else {
-        if (updatedTasks[newStatus]) {
-          updatedTasks[newStatus].push(updatedTask);
-        }
-      }
-
-      setTasks(updatedTasks);
       handleCloseModal();
     }
   };
 
   const renderTasks = (taskList: Task[], column: any) =>
-    taskList.map((task, index) => (
+    taskList.map((task: any, index: any) => (
       <tr key={index} className="shadow-md">
         <td className="ps-2 py-4">{task.title}</td>
         <td className=" py-4">{task.description}</td>
@@ -161,7 +169,7 @@ const ListView: React.FC<any> = ({ tasks, onDelete, onEdit, setTasks }) => {
             <FaRegEdit className="text-white" />
           </button>
           <button
-            onClick={() => onDelete(column as keyof typeof tasks, index)}
+            onClick={() => onDelete(task._id)}
             className="p-2 bg-red-500 rounded-md"
           >
             <MdDelete className="text-white" />

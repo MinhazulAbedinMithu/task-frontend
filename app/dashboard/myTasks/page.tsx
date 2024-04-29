@@ -26,7 +26,10 @@ const MyTaskPage = () => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [selectedColumn, setSelectedColumn] = useState<keyof any | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [isDeleted, setIsDeleted] = useState(false);
   const cookieToken = Cookies.get("token") || "{}";
+  const cookieUser = Cookies.get("user") || "{}";
+  const authUser = JSON.parse(cookieUser);
   // console.log(cookieToken);
 
   const toggleViewMode = (mode: "list" | "board") => {
@@ -46,13 +49,19 @@ const MyTaskPage = () => {
     };
     fetchTasks();
     //@ts-ignore
-  }, []);
+  }, [isDeleted]);
 
-  const handleDeleteTask = (column: any, index: number) => {
-    const updatedTasks = { ...tasks };
-    //@ts-ignore
-    updatedTasks[column] = tasks[column].filter((_, idx) => idx !== index);
-    setTasks(updatedTasks);
+  const handleDeleteTask = async (taskId: string) => {
+    const res = await fetch(TASK_API.DELETE(taskId), {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `${cookieToken}`,
+      },
+    });
+    const data = await res.json();
+    console.log(data);
+    setIsDeleted(!isDeleted);
   };
 
   const handleOpenAddModal = () => {
@@ -85,11 +94,10 @@ const MyTaskPage = () => {
         "Content-type": "application/json",
         Authorization: `${cookieToken}`,
       },
-      body: JSON.stringify(task),
+      body: JSON.stringify({ ...task, createdBy: authUser?.id }),
     });
     const data = await res.json();
     setTasks([...tasks, data]);
-    console.log(data);
   };
 
   return (

@@ -9,12 +9,13 @@ import { ImFacebook2 } from "react-icons/im";
 import { SiGmail } from "react-icons/si";
 import logo from "@/public/logo2.jpg";
 import Cookies from "js-cookie";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 type Props = {};
 
 const Navbar = (props: Props) => {
   const pathname = usePathname();
+  const router = useRouter();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -69,12 +70,16 @@ const Navbar = (props: Props) => {
                 >
                   Dashboard
                 </Link>
-                <Link
-                  href="/logout"
-                  className="text-black font-bold p-2 rounded-md"
+                <button
+                  className="text-black font-bold p-2 rounded-md cursor-pointer"
+                  onClick={() => {
+                    Cookies.remove("user");
+                    Cookies.remove("token");
+                    router.push("/login");
+                  }}
                 >
                   Logout
-                </Link>
+                </button>
                 <span
                   className={`text-gray-400 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium`}
                 >
@@ -103,18 +108,6 @@ const Navbar = (props: Props) => {
       </div>
       <div className={isMobileMenuOpen ? "" : "hidden"} id="mobile-menu">
         <div className="space-y-1 px-2 pb-3 pt-2">
-          <Link
-            href="/login"
-            className={`text-gray-400 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-base block font-medium`}
-          >
-            Login
-          </Link>
-          <Link
-            href="/register"
-            className={`text-gray-400 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-base block font-medium`}
-          >
-            Sign up
-          </Link>
           {authUser.name ? (
             <>
               <span
@@ -128,12 +121,16 @@ const Navbar = (props: Props) => {
               >
                 Dashboard
               </Link>
-              <Link
-                href="/logout"
-                className="text-black font-bold p-2 rounded-md"
+              <span
+                className="text-black font-bold p-2 rounded-md cursor-pointer"
+                onClick={() => {
+                  Cookies.remove("user");
+                  Cookies.remove("token");
+                  router.push("/login");
+                }}
               >
                 Logout
-              </Link>
+              </span>
             </>
           ) : (
             <>

@@ -1,4 +1,6 @@
+import { TASK_API } from "@/apiConfig";
 import React, { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 import {
   DragDropContext,
   Droppable,
@@ -35,6 +37,23 @@ const BoardView: React.FC<any> = ({ tasks, onDelete, setTasks }) => {
     inProgress: [],
     done: [],
   });
+  const [dragged, setDragged] = useState(false);
+  const cookieToken = Cookies.get("token") || "{}";
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      const res = await fetch(`${TASK_API.ALL}`, {
+        headers: {
+          Authorization: `${cookieToken}`,
+        },
+      });
+      const apiTasks = await res.json();
+      // console.log(apiTasks);
+      setTasks(apiTasks);
+    };
+    fetchTasks();
+    //@ts-ignore
+  }, [dragged]);
 
   // console.log(customTasks);
 
@@ -94,7 +113,7 @@ const BoardView: React.FC<any> = ({ tasks, onDelete, setTasks }) => {
     return `${days}d ${hours}hr ${minutes}min`;
   };
 
-  const handleDragEnd = (result: any) => {
+  const handleDragEnd = async (result: any) => {
     if (!result.destination) return;
 
     const { source, destination } = result;
@@ -104,6 +123,22 @@ const BoardView: React.FC<any> = ({ tasks, onDelete, setTasks }) => {
     const toColumn = destination.droppableId as keyof typeof customTasks;
 
     if (fromColumn === toColumn) return;
+
+    console.log(task, result);
+    const dest =
+      destination.droppableId === "inProgress"
+        ? "in progress"
+        : destination.droppableId;
+    const res = await fetch(TASK_API.UPDATE(task._id), {
+      method: "PATCH",
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `${cookieToken}`,
+      },
+      body: JSON.stringify({ ...task, status: dest }),
+    });
+    const data = await res.json();
+    // console.log(data);
 
     setCustomTasks((prevTasks: any) => ({
       ...prevTasks,
@@ -117,6 +152,7 @@ const BoardView: React.FC<any> = ({ tasks, onDelete, setTasks }) => {
         ...prevTasks[toColumn]?.slice(destination.index),
       ],
     }));
+    setDragged(!dragged);
   };
 
   return (

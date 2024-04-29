@@ -7,15 +7,15 @@ export const AUTH_API = {
   REGISTER: `${BASE_URL}/auth/register`,
   LOGIN: `${BASE_URL}/auth/login`,
   LOGOUT: `${BASE_URL}/auth/logout`,
+  PROFILE: `${BASE_URL}/auth/profile`,
 };
 
 export const TASK_API = {
   CREATE: `${BASE_URL}/tasks/create`,
   ALL: `${BASE_URL}/tasks`,
-  COUNT: `${BASE_URL}/users/count`,
-  SINGLE: (id: string) => `${BASE_URL}/users/profile/${id}`,
-  UPDATE: (id: string) => `${BASE_URL}/cities/:${id}`,
-  DELETE: (id: string) => `${BASE_URL}/cities/:${id}`,
+  SINGLE: (id: string) => `${BASE_URL}/tasks/${id}`,
+  UPDATE: (id: string) => `${BASE_URL}/tasks/${id}`,
+  DELETE: (id: string) => `${BASE_URL}/tasks/${id}`,
 };
 
 export const CHAT_API = `${BASE_URL}/chat`;

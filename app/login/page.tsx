@@ -132,14 +132,6 @@ const Login = () => {
               </Link>
             </p>
           </div>
-          <div className="max-w-80 md:w-80 w-full">
-            <p className="text-right">
-              <Link href="/forgot-password" className=" text-slate-700">
-                {" "}
-                Forgot Password?
-              </Link>
-            </p>
-          </div>
           <button
             className="bg-sky-600 text-white text-lg py-2 px-16 rounded-md font-bold"
             type="submit"

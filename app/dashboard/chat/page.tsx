@@ -60,7 +60,7 @@ const ChatPage: React.FC = () => {
     <div className="flex flex-col h-[90vh]">
       <div className="bg-gray-100 text-black flex-grow p-4 overflow-y-auto">
         <div className="flex flex-col h-full">
-          {messages.map((message: any, index: any) => (
+          {messages?.map((message: any, index: any) => (
             <div
               key={index}
               className={`mb-2 ${

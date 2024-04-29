@@ -35,7 +35,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
     status: "todo",
   };
 
-  const [formData, setFormData] = useState<Task>(task || defaultTask);
+  const [formData, setFormData] = useState<any>(task || defaultTask);
 
   useEffect(() => {
     if (task) {
@@ -53,7 +53,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
     >
   ) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
+    setFormData((prevData: any) => ({
       ...prevData,
       [name]: value,
     }));
@@ -62,10 +62,14 @@ const TaskModal: React.FC<TaskModalProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (formData) {
+      console.log(formData);
+
       onSubmit(formData);
       onClose();
     }
   };
+
+  // console.log(formData);
 
   return (
     <>
@@ -121,7 +125,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
                     type="date"
                     id="startDate"
                     name="startDate"
-                    defaultValue={formData.startDate}
+                    defaultValue={formData.startDate?.split("T")[0]}
                     onChange={handleChange}
                     className="mt-1 p-2 w-full border rounded-md"
                     required
@@ -157,7 +161,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
                     type="date"
                     id="endDate"
                     name="endDate"
-                    defaultValue={formData.endDate}
+                    defaultValue={formData.endDate?.split("T")[0]}
                     onChange={handleChange}
                     className="mt-1 p-2 w-full border rounded-md"
                     required
