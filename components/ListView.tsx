@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { FaRegEdit } from 'react-icons/fa';
-import { MdDelete } from 'react-icons/md';
-import { initialTasks } from '../app/dashboard/myTasks/page';
-import TaskModal from './TaskModal';
+import React, { useEffect, useState } from "react";
+import { FaRegEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import TaskModal from "./TaskModal";
+import { log } from "util";
 
 type Task = {
   title: string;
@@ -12,7 +12,7 @@ type Task = {
   endDate: string;
   endTime: string;
   score?: number;
-  status?: 'todo' | 'inProgress' | 'done';
+  status?: "todo" | "inProgress" | "done";
 };
 
 type ListViewProps = {
@@ -21,16 +21,53 @@ type ListViewProps = {
     inProgress: Task[];
     done: Task[];
   };
-  setTasks: React.Dispatch<React.SetStateAction<typeof initialTasks>>;
-  onDelete: (column: keyof typeof initialTasks, index: number) => void;
-  onEdit: (updatedTask: Task, column: keyof typeof initialTasks, index: number) => void;
+  setTasks: React.Dispatch<React.SetStateAction<any>>;
+  onDelete: (column: any, index: number) => void;
+  onEdit: (updatedTask: Task, column: any, index: number) => void;
 };
 
-const ListView: React.FC<ListViewProps> = ({ tasks, onDelete, onEdit, setTasks }) => {
+const ListView: React.FC<any> = ({ tasks, onDelete, onEdit, setTasks }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [selectedColumn, setSelectedColumn] = useState<keyof typeof initialTasks | null>(null);
+  const [selectedColumn, setSelectedColumn] = useState<keyof any | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [customTasks, setCustomTasks] = useState<any>({
+    todo: [],
+    inProgress: [],
+    done: [],
+  });
+
+  console.log({ customTasks, tasks });
+
+  useEffect(() => {
+    let todoList = [];
+    let inProgressList = [];
+    let doneList = [];
+
+    Array.isArray(tasks) &&
+      tasks.forEach((t) => {
+        if (t.status === "todo") {
+          // setCustomTasks({ ...customTasks, todo: [...customTasks?.todo, t] });
+          todoList.push(t);
+        } else if (t.status === "in progress") {
+          // setCustomTasks({
+          //   ...customTasks,
+          //   inProgress: [...customTasks?.inProgress, t],
+          // });
+          inProgressList.push(t);
+        } else {
+          doneList.push(t);
+          // setCustomTasks({ ...customTasks, done: [...customTasks?.done, t] });
+        }
+        setCustomTasks({
+          // ...customTasks,
+          // inProgress: [...customTasks?.inProgress, t],
+          todo: todoList,
+          inProgress: inProgressList,
+          done: doneList,
+        });
+      });
+  }, [tasks]);
 
   const calculateRemainingTime = (
     startDate: string,
@@ -38,12 +75,12 @@ const ListView: React.FC<ListViewProps> = ({ tasks, onDelete, onEdit, setTasks }
     endDate: string,
     endTime: string
   ) => {
-    const startDateTime = new Date(`${startDate}T${startTime}:00`);
-    const endDateTime = new Date(`${endDate}T${endTime}:00`);
+    const startDateTime = new Date(`${startDate}T${startTime}`);
+    const endDateTime = new Date(`${endDate.split("T")[0]}T${endTime}`);
     const currentTime = new Date();
 
     if (currentTime > endDateTime) {
-      return '0d 0hr 0min';
+      return "0d 0hr 0min";
     }
 
     let diffInMilliseconds = endDateTime.getTime() - currentTime.getTime();
@@ -67,14 +104,10 @@ const ListView: React.FC<ListViewProps> = ({ tasks, onDelete, onEdit, setTasks }
 
   const handleCloseModal = () => {
     setIsEditModalOpen(false);
-    setSelectedTask(null); 
+    setSelectedTask(null);
   };
 
-  const handleEditClick = (
-    task: Task,
-    column: keyof typeof initialTasks,
-    index: number
-  ) => {
+  const handleEditClick = (task: Task, column: any, index: number) => {
     setSelectedTask(task);
     setSelectedColumn(column);
     setSelectedIndex(index);
@@ -83,13 +116,15 @@ const ListView: React.FC<ListViewProps> = ({ tasks, onDelete, onEdit, setTasks }
   const handleEditTask = (updatedTask: Task) => {
     if (selectedColumn !== null && selectedIndex !== null) {
       const updatedTasks = { ...tasks };
-      
+
+      //@ts-ignore
       updatedTasks[selectedColumn] = tasks[selectedColumn].filter(
-        (_, idx) => idx !== selectedIndex
+        //@ts-ignore
+        (_, idx): any => idx !== selectedIndex
       );
-  
+
       const newStatus = updatedTask.status || selectedColumn;
-  
+
       if (newStatus !== selectedColumn) {
         if (updatedTasks[newStatus]) {
           updatedTasks[newStatus].push(updatedTask);
@@ -99,13 +134,13 @@ const ListView: React.FC<ListViewProps> = ({ tasks, onDelete, onEdit, setTasks }
           updatedTasks[newStatus].push(updatedTask);
         }
       }
-  
+
       setTasks(updatedTasks);
       handleCloseModal();
     }
-  };  
+  };
 
-  const renderTasks = (taskList: Task[], column: keyof typeof initialTasks) =>
+  const renderTasks = (taskList: Task[], column: any) =>
     taskList.map((task, index) => (
       <tr key={index} className="shadow-md">
         <td className="ps-2 py-4">{task.title}</td>
@@ -142,7 +177,7 @@ const ListView: React.FC<ListViewProps> = ({ tasks, onDelete, onEdit, setTasks }
           Todo
         </h2>
         <table className="table-auto w-full">
-          <tbody>{renderTasks(tasks.todo, 'todo')}</tbody>
+          <tbody>{renderTasks(customTasks.todo, "todo")}</tbody>
         </table>
       </div>
       <div>
@@ -150,7 +185,7 @@ const ListView: React.FC<ListViewProps> = ({ tasks, onDelete, onEdit, setTasks }
           In Progress
         </h2>
         <table className="table-auto w-full">
-          <tbody>{renderTasks(tasks.inProgress, 'inProgress')}</tbody>
+          <tbody>{renderTasks(customTasks.inProgress, "in progress")}</tbody>
         </table>
       </div>
       <div>
@@ -158,7 +193,7 @@ const ListView: React.FC<ListViewProps> = ({ tasks, onDelete, onEdit, setTasks }
           Done
         </h2>
         <table className="table-auto w-full">
-          <tbody>{renderTasks(tasks.done, 'done')}</tbody>
+          <tbody>{renderTasks(customTasks.done, "done")}</tbody>
         </table>
       </div>
       <TaskModal

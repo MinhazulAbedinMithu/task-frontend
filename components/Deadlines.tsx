@@ -1,9 +1,8 @@
-'use client'
-import { initialTasks } from "@/app/dashboard/myTasks/page";
+"use client";
 
 type Props = {};
 
-const Deadlines = (props: Props) => {
+const Deadlines = ({ tasks }: any) => {
   const calculateRemainingTime = (
     startDate: string,
     startTime: string,
@@ -11,7 +10,7 @@ const Deadlines = (props: Props) => {
     endTime: string
   ) => {
     const startDateTime = new Date(`${startDate}T${startTime}:00`);
-    const endDateTime = new Date(`${endDate}T${endTime}:00`);
+    const endDateTime = new Date(`${endDate.split("T")[0]}T${endTime}:00`);
     const currentTime = new Date();
 
     if (currentTime > endDateTime) {
@@ -41,7 +40,7 @@ const Deadlines = (props: Props) => {
           </tr>
         </thead>
         <tbody>
-          {initialTasks.inProgress.map((task) => (
+          {tasks.map((task: any) => (
             <tr className="shadow-md" key={task.title}>
               <td className="p-2">{task.title}</td>
               <td className="p-2">

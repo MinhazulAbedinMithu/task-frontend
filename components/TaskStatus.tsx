@@ -1,9 +1,8 @@
 "use client";
-import { initialTasks } from "@/app/dashboard/myTasks/page";
 
 type Props = {};
 
-const TaskStatus = (props: Props) => {
+const TaskStatus = ({ tasks }: any) => {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Task Status</h1>
@@ -16,22 +15,23 @@ const TaskStatus = (props: Props) => {
           </tr>
         </thead>
         <tbody>
-          {initialTasks.todo.map((task) => (
+          {/* {tasks.map((task: any) => (
             <tr className="shadow-md" key={task.title}>
               <td className="p-2">{task.title}</td>
               <td className="p-2">{task.endDate}</td>
               <td>
                 <p
                   className={`${
-                    task.status === "todo" && "bg-blue-400 p-1 text-white w-fit text-xs rounded-sm"
+                    task.status === "todo" &&
+                    "bg-blue-400 p-1 text-white w-fit text-xs rounded-sm"
                   }`}
                 >
                   {task.status}
                 </p>
               </td>
             </tr>
-          ))}
-          {initialTasks.inProgress.map((task) => (
+          ))} */}
+          {/* {initialTasks.inProgress.map((task) => (
             <tr className="shadow-md" key={task.title}>
               <td className="p-2">{task.title}</td>
               <td className="p-2">{task.endDate}</td>
@@ -46,15 +46,19 @@ const TaskStatus = (props: Props) => {
                 </p>
               </td>
             </tr>
-          ))}
-          {initialTasks.done.map((task) => (
+          ))} */}
+          {tasks.map((task: any) => (
             <tr className="shadow-md" key={task.title}>
               <td className="p-2">{task.title}</td>
-              <td className="p-2">{task.endDate}</td>
+              <td className="p-2">{task.endDate.split("T")[0]}</td>
               <td>
                 <p
                   className={`${
-                    task.status === "done" && "bg-green-500 p-1 text-white w-fit text-xs rounded-sm"
+                    task.status === "todo"
+                      ? "bg-blue-400 p-1 text-white w-fit text-xs rounded-sm"
+                      : task.status === "done"
+                      ? "bg-green-500 p-1 text-white w-fit text-xs rounded-sm"
+                      : "bg-pink-500 p-1 text-white w-fit text-xs rounded-sm"
                   }`}
                 >
                   {task.status}

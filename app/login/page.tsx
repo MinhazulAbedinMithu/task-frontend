@@ -39,7 +39,7 @@ const Login = () => {
       }
 
       // localStorage.setItem("token", data?.user?.token);
-      Cookies.set("token", data?.user?.token);
+      Cookies.set("token", data?.token);
       Cookies.set("role", data?.user?.role?.name);
       Cookies.set("user", JSON.stringify(data?.user));
       setLoading(false);

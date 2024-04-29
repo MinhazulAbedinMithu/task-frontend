@@ -2,27 +2,37 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BsTwitterX } from "react-icons/bs";
 import { CgMenu } from "react-icons/cg";
 import { ImFacebook2 } from "react-icons/im";
 import { SiGmail } from "react-icons/si";
 import logo from "@/public/logo2.jpg";
 import Cookies from "js-cookie";
+import { redirect } from "next/navigation";
 
 type Props = {};
 
-const securityNavList = [
-  { title: "Home", href: "/" },
-  { title: "My School", href: "/myschool" },
-  { title: "Requests", href: "/request" },
-  { title: "About Us", href: "/about" },
-  { title: "Contact Us", href: "/contact" },
-];
-
 const Navbar = (props: Props) => {
   const pathname = usePathname();
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const cookieUser = Cookies.get("user") || "{}";
+  const authUser = JSON.parse(cookieUser);
+
+  useEffect(() => {
+    //@ts-ignore
+    // if (pathname !== "/login" || pathname !== "/") {
+    !authUser.name &&
+      pathname !== "/login" &&
+      pathname !== "/register" &&
+      pathname !== "/" &&
+      redirect("/login");
+    // }
+
+    //@ts-ignore
+  }, [pathname]);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -43,31 +53,53 @@ const Navbar = (props: Props) => {
             </button>
           </div>
           <div className="flex items-center gap-2">
-            <Link
-              href="/"
-              className="text-xl font-bold md:block hidden"
-            >
+            <Link href="/" className="text-xl font-bold md:block hidden">
               ProduGame
             </Link>
           </div>
           <div className="hidden sm:ml-6 sm:block">
-            <div className="flex gap-2 items-center justify-between w-full">
-              <Link
-                href="/login"
-                className={`text-gray-400 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium`}
-                aria-current="page"
-              >
-                Login
-              </Link>
-            <Link
-              href="/register"
-              className="text-black font-bold p-2 rounded-md"
-            >
-              Sign up
-            </Link>
+            {authUser.name ? (
+              <div className="flex gap-2 items-center justify-between w-full">
+                <Link href="/" className="text-black font-bold p-2 rounded-md">
+                  Home
+                </Link>
+                <Link
+                  href="/dashboard"
+                  className="text-black font-bold p-2 rounded-md"
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  href="/logout"
+                  className="text-black font-bold p-2 rounded-md"
+                >
+                  Logout
+                </Link>
+                <span
+                  className={`text-gray-400 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium`}
+                >
+                  {authUser.name}
+                </span>
+              </div>
+            ) : (
+              <div className="flex gap-2 items-center justify-between w-full">
+                <Link
+                  href="/login"
+                  className={`text-gray-400 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium`}
+                  aria-current="page"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/register"
+                  className="text-black font-bold p-2 rounded-md"
+                >
+                  Sign up
+                </Link>
+              </div>
+            )}
           </div>
         </div>
-      </div>
       </div>
       <div className={isMobileMenuOpen ? "" : "hidden"} id="mobile-menu">
         <div className="space-y-1 px-2 pb-3 pt-2">
@@ -83,6 +115,43 @@ const Navbar = (props: Props) => {
           >
             Sign up
           </Link>
+          {authUser.name ? (
+            <>
+              <span
+                className={`text-gray-400 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium`}
+              >
+                {authUser.name}
+              </span>
+              <Link
+                href="/dashboard"
+                className="text-black font-bold p-2 rounded-md"
+              >
+                Dashboard
+              </Link>
+              <Link
+                href="/logout"
+                className="text-black font-bold p-2 rounded-md"
+              >
+                Logout
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className={`text-gray-400 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium`}
+                aria-current="page"
+              >
+                Login
+              </Link>
+              <Link
+                href="/register"
+                className="text-black font-bold p-2 rounded-md"
+              >
+                Sign up
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>

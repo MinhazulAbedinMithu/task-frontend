@@ -1,13 +1,16 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
+import Cookies from "js-cookie";
+import { CHAT_API } from "@/apiConfig";
 
 const currentUserImageUrl = "https://via.placeholder.com/50";
 const otherUserImageUrl = "https://via.placeholder.com/50";
 
-const Page: React.FC = () => {
-  const [messages, setMessages] = useState<
-    { text: string; isCurrentUser: boolean }[]
-  >([]);
+const ChatPage: React.FC = () => {
+  const [messages, setMessages] = useState<any>([]);
+  const cookieToken = Cookies.get("token") || "{}";
+  const cookieUser = Cookies.get("user") || "{}";
+  const authUser = JSON.parse(cookieUser);
   const [currentMessage, setCurrentMessage] = useState<string>("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -16,41 +19,64 @@ const Page: React.FC = () => {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
+  // console.log(cookieUser);
 
   useEffect(() => {
+    const fetchChat = async () => {
+      const res = await fetch(`${CHAT_API}`, {
+        headers: {
+          Authorization: `${cookieToken}`,
+        },
+      });
+      const chatMgs = await res.json();
+      // console.log(chatMgs);
+      setMessages(chatMgs);
+    };
+    fetchChat();
     scrollToBottom();
   }, [messages]);
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (currentMessage.trim() !== "") {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: currentMessage.trim(), isCurrentUser: true },
-      ]);
+      const res = await fetch(CHAT_API, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `${cookieToken}`,
+        },
+        body: JSON.stringify({
+          message: currentMessage,
+          userName: authUser.name || "",
+        }),
+      });
+      const data = await res.json();
+      console.log({ data });
+
       setCurrentMessage("");
     }
   };
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-[90vh]">
       <div className="bg-gray-100 text-black flex-grow p-4 overflow-y-auto">
         <div className="flex flex-col h-full">
-          {messages.map((message, index) => (
+          {messages.map((message: any, index: any) => (
             <div
               key={index}
               className={`mb-2 ${
-                message.isCurrentUser ? "self-end" : "self-start"
+                message.userName === authUser.name ? "self-end" : "self-start"
               } flex items-center gap-2`}
             >
               <div
                 className={`bg-gray-200 p-2 rounded-lg ${
-                  message.isCurrentUser ? "bg-blue-300" : ""
+                  message.userName === authUser.name ? "bg-blue-300" : ""
                 }`}
               >
-                <span>{message.text}</span>
+                <span>{message.message}</span>
               </div>
               <img
                 src={
+                  //@ts-ignore
                   message.isCurrentUser
                     ? currentUserImageUrl
                     : otherUserImageUrl
@@ -84,4 +110,4 @@ const Page: React.FC = () => {
   );
 };
 
-export default Page;
+export default ChatPage;

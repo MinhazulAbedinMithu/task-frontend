@@ -1,7 +1,7 @@
-import 'chart.js/auto';
-import { Pie } from 'react-chartjs-2';
-import ChartDataLabels from 'chartjs-plugin-datalabels'; 
-import { Chart } from 'chart.js';
+import "chart.js/auto";
+import { Pie } from "react-chartjs-2";
+import ChartDataLabels from "chartjs-plugin-datalabels";
+import { Chart } from "chart.js";
 
 Chart.register(ChartDataLabels);
 
@@ -20,52 +20,61 @@ interface Props {
   tasks: InitialTasks;
 }
 
-const PieChart: React.FC<Props> = ({ tasks }) => {
+const PieChart: React.FC<Props> = ({ tasks }: any) => {
   const completedTasksCount = {
-    todo: tasks.todo.filter(task => task.status === "todo").length,
-    inProgress: tasks.inProgress.filter(task => task.status === "inProgress").length,
-    done: tasks.done.filter(task => task.status === "done").length
+    todo: tasks.filter((task: any) => task.status === "todo").length,
+    inProgress: tasks.filter((task: any) => task.status === "in progress")
+      .length,
+    done: tasks.filter((task: any) => task.status === "done").length,
   };
 
-  const totalTasks = completedTasksCount.todo + completedTasksCount.inProgress + completedTasksCount.done;
+  const totalTasks =
+    completedTasksCount.todo +
+    completedTasksCount.inProgress +
+    completedTasksCount.done;
 
   const percentageLabels = [
-    `Todo: ${((completedTasksCount.todo / totalTasks) * 100)}%`,
-    `In Progress: ${((completedTasksCount.inProgress / totalTasks) * 100)}%`,
-    `Done: ${((completedTasksCount.done / totalTasks) * 100)}%`
+    `Todo: ${(completedTasksCount.todo / totalTasks) * 100}%`,
+    `In Progress: ${(completedTasksCount.inProgress / totalTasks) * 100}%`,
+    `Done: ${(completedTasksCount.done / totalTasks) * 100}%`,
   ];
 
   const data = {
     labels: percentageLabels,
-    datasets: [{
-      data: [completedTasksCount.todo, completedTasksCount.inProgress, completedTasksCount.done],
-      backgroundColor: [
-        'rgb(96,165,250)',
-        'rgb(236,72,153)',
-        'rgb(34,197,94)',
-      ],
-    }],
+    datasets: [
+      {
+        data: [
+          completedTasksCount.todo,
+          completedTasksCount.inProgress,
+          completedTasksCount.done,
+        ],
+        backgroundColor: [
+          "rgb(96,165,250)",
+          "rgb(236,72,153)",
+          "rgb(34,197,94)",
+        ],
+      },
+    ],
   };
 
   const options = {
     plugins: {
       datalabels: {
-        color: '#fff',
+        color: "#fff",
         font: {
-          weight: 'bold' as 'bold' | 'normal' | 'bolder' | 'lighter' | number, 
+          weight: "bold" as "bold" | "normal" | "bolder" | "lighter" | number,
           size: 20,
         },
         formatter: (value: number, ctx: any) => {
-          const percentage = ((value / totalTasks) * 100);
+          const percentage = (value / totalTasks) * 100;
           return `${percentage}%`;
-        }
+        },
       },
     },
   };
-  
 
   return (
-    <div className='my-4'>
+    <div className="my-4">
       <h2 className="text-2xl font-bold mb-4">Tasks Completion Status</h2>
       <Pie data={data} options={options} />
     </div>

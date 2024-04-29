@@ -1,9 +1,11 @@
 "use client";
+import { TASK_API } from "@/apiConfig";
 import BoardView from "@/components/BoardView";
 import ListView from "@/components/ListView";
 import TaskModal from "@/components/TaskModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
+import Cookies from "js-cookie";
 
 type Task = {
   title: string;
@@ -12,79 +14,43 @@ type Task = {
   startTime: string;
   endDate: string;
   endTime: string;
-  level?: 1 | 2 | 3;
+  level?: "easy" | "medium" | "hard";
   status?: "todo" | "inProgress" | "done";
 };
 
-export const initialTasks = {
-  todo: [
-    {
-      title: "Task 1",
-      description: "Description 1",
-      startDate: "2024-04-23",
-      startTime: "09:00",
-      endDate: "2024-04-26",
-      endTime: "10:00",
-      score: 1,
-      status: "todo",
-    },
-    {
-      title: "Task 2",
-      description: "Description 2",
-      startDate: "2024-04-23",
-      startTime: "10:00",
-      endDate: "2024-04-26",
-      endTime: "11:00",
-      score: 2,
-      status: "todo",
-    },
-  ],
-  inProgress: [
-    {
-      title: "Task 3",
-      description: "Description 3",
-      startDate: "2024-04-23",
-      startTime: "11:00",
-      endDate: "2024-04-26",
-      endTime: "12:00",
-      score: 3,
-      status: "inProgress",
-    },
-  ],
-  done: [
-    {
-      title: "Task 4",
-      description: "Description 4",
-      startDate: "2024-04-23",
-      startTime: "13:00",
-      endDate: "2024-04-26",
-      endTime: "14:00",
-      score: 2,
-      status: "done",
-    },
-  ],
-};
-
-const Page = () => {
-  const [tasks, setTasks] = useState(initialTasks);
+const MyTaskPage = () => {
+  const [tasks, setTasks] = useState<any>([]);
   const [viewMode, setViewMode] = useState<"list" | "board">("list");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [selectedColumn, setSelectedColumn] = useState<
-    keyof typeof initialTasks | null
-  >(null);
+  const [selectedColumn, setSelectedColumn] = useState<keyof any | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const cookieToken = Cookies.get("token") || "{}";
+  // console.log(cookieToken);
 
   const toggleViewMode = (mode: "list" | "board") => {
     setViewMode(mode);
   };
 
-  const handleDeleteTask = (
-    column: keyof typeof initialTasks,
-    index: number
-  ) => {
+  useEffect(() => {
+    const fetchTasks = async () => {
+      const res = await fetch(`${TASK_API.ALL}`, {
+        headers: {
+          Authorization: `${cookieToken}`,
+        },
+      });
+      const apiTasks = await res.json();
+      // console.log(apiTasks);
+      setTasks(apiTasks);
+    };
+    fetchTasks();
+    //@ts-ignore
+  }, []);
+
+  const handleDeleteTask = (column: any, index: number) => {
     const updatedTasks = { ...tasks };
+    //@ts-ignore
     updatedTasks[column] = tasks[column].filter((_, idx) => idx !== index);
     setTasks(updatedTasks);
   };
@@ -93,11 +59,7 @@ const Page = () => {
     setIsAddModalOpen(true);
   };
 
-  const handleOpenEditModal = (
-    task: Task,
-    column: keyof typeof initialTasks,
-    index: number
-  ) => {
+  const handleOpenEditModal = (task: Task, column: any, index: number) => {
     setSelectedTask(task);
     setSelectedColumn(column);
     setSelectedIndex(index);
@@ -109,13 +71,25 @@ const Page = () => {
     setIsEditModalOpen(false);
   };
 
-  const handleSubmitTask = (task: Task) => {
-    if (task.status && tasks[task.status]) {
-      const updatedTasks = { ...tasks };
-      updatedTasks[task.status] = [...updatedTasks[task.status], task];
-      setTasks(updatedTasks);
-      handleCloseModals();
-    }
+  const handleSubmitTask = async (task: Task) => {
+    //@ts-ignore
+    // if (task.status && tasks[task.status]) {
+    //   const updatedTasks = { ...tasks };
+    //   // updatedTasks[task.status] = [...updatedTasks[task.status], task];
+    //   setTasks(updatedTasks);
+    //   handleCloseModals();
+    // }
+    const res = await fetch(TASK_API.CREATE, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `${cookieToken}`,
+      },
+      body: JSON.stringify(task),
+    });
+    const data = await res.json();
+    setTasks([...tasks, data]);
+    console.log(data);
   };
 
   return (
@@ -170,4 +144,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default MyTaskPage;

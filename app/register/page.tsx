@@ -9,8 +9,7 @@ const Register: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [formInputError, setFormInputError] = useState({
-    firstName: "",
-    lastName: "",
+    name: "",
     phone: "",
     email: "",
     password: "",
@@ -20,15 +19,8 @@ const Register: React.FC = () => {
     e.preventDefault();
     setLoading(true);
 
-    const firstName = e.target.firstName.value;
-    const lastName = e.target.lastName.value;
-
-    const fullName = [firstName, lastName]
-      .filter(Boolean)
-      .join(" ");
-
     const formData = {
-      fullName: fullName,
+      name: e.target.name.value,
       email: e.target.email.value,
       password: e.target.password.value,
       phone: e.target.phone.value,
@@ -83,56 +75,57 @@ const Register: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
           <label className="block">
             <span className="block text-sm font-medium text-slate-700">
-              First Name
+              Name
             </span>
             <input
-              name="firstName"
+              name="name"
               className="border-2 rounded-md p-2 shadow focus:ring-0 focus:ring-sky-400 focus:outline-none focus:border-sky-400 w-full"
               type="text"
-              placeholder="First name"
+              placeholder="Name"
               required
               onInvalid={(e: any) =>
                 setFormInputError({
                   ...formInputError,
-                  firstName: e.target.validationMessage,
+                  name: e.target.validationMessage,
                 })
               }
               onInput={(e: any) =>
                 setFormInputError({
                   ...formInputError,
-                  firstName: "",
+                  name: "",
                 })
               }
             />
             <span style={{ color: "red" }} className="block">
-              {formInputError.firstName}
+              {formInputError.name}
             </span>
           </label>
           <label className="block">
             <span className="block text-sm font-medium text-slate-700">
-              Last Name
+              Email
             </span>
             <input
-              name="lastName"
+              name="email"
               className="border-2 rounded-md p-2 shadow focus:ring-0 focus:ring-sky-400 focus:outline-none focus:border-sky-400 w-full"
-              type="text"
-              placeholder="Last name"
+              type="email"
+              placeholder="Email"
               required
-              onInvalid={(e: any) =>
+              onInvalid={(e: any) => {
+                // e.target.setCustomValidity("The Email must be Valid");
                 setFormInputError({
                   ...formInputError,
-                  lastName: e.target.validationMessage,
-                })
-              }
+                  email: e.target.validationMessage,
+                });
+              }}
               onInput={(e: any) =>
                 setFormInputError({
                   ...formInputError,
-                  lastName: "",
+                  email: "",
                 })
               }
             />
             <span style={{ color: "red" }} className="block">
-              {formInputError.lastName}
+              {formInputError.email}
             </span>
           </label>
         </div>
@@ -140,7 +133,7 @@ const Register: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
           <label className="block">
             <span className="block text-sm font-medium text-slate-700">
-              Phone Number
+              Phone
             </span>
             <input
               name="phone"
@@ -176,48 +169,7 @@ const Register: React.FC = () => {
               {formInputError.phone}
             </span>
           </label>
-          <label className="block">
-            <span className="block text-sm font-medium text-slate-700">
-              Email
-            </span>
-            <input
-              name="email"
-              className="border-2 rounded-md p-2 shadow focus:ring-0 focus:ring-sky-400 focus:outline-none focus:border-sky-400 w-full"
-              type="email"
-              placeholder="Email"
-              required
-              onInvalid={(e: any) => {
-                // e.target.setCustomValidity("The Email must be Valid");
-                setFormInputError({
-                  ...formInputError,
-                  email: e.target.validationMessage,
-                });
-              }}
-              onInput={(e: any) =>
-                setFormInputError({
-                  ...formInputError,
-                  email: "",
-                })
-              }
-            />
-            <span style={{ color: "red" }} className="block">
-              {formInputError.email}
-            </span>
-          </label>
-          {/* <label className="block">
-            <span className="block text-sm font-medium text-slate-700">
-              Another Phone Number
-            </span>
-            <input
-              name="anotherPhone"
-              className="border-2 rounded-md p-2 shadow focus:ring-0 focus:ring-sky-400 focus:outline-none focus:border-sky-400 w-full"
-              type="text"
-              placeholder="Another phone number"
-            />
-          </label> */}
-        </div>
-        <div className="grid grid-cols-1 gap-4 w-full">
-          
+
           <label className="block">
             <span className="block text-sm font-medium text-slate-700">
               Password
@@ -251,7 +203,19 @@ const Register: React.FC = () => {
               {formInputError.password}
             </span>
           </label>
+          {/* <label className="block">
+            <span className="block text-sm font-medium text-slate-700">
+              Another Phone Number
+            </span>
+            <input
+              name="anotherPhone"
+              className="border-2 rounded-md p-2 shadow focus:ring-0 focus:ring-sky-400 focus:outline-none focus:border-sky-400 w-full"
+              type="text"
+              placeholder="Another phone number"
+            />
+          </label> */}
         </div>
+
         <div className="flex items-start w-full">
           <p>
             Already have an account?

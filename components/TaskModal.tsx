@@ -7,7 +7,7 @@ type Task = {
   startTime: string;
   endDate: string;
   endTime: string;
-  score?: number;
+  level?: "easy" | "medium" | "hard";
   status?: "todo" | "inProgress" | "done";
 };
 
@@ -31,7 +31,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
     startTime: "",
     endDate: "",
     endTime: "",
-    score: 0,
+    level: "easy",
     status: "todo",
   };
 
@@ -43,7 +43,9 @@ const TaskModal: React.FC<TaskModalProps> = ({
     } else {
       setFormData(defaultTask);
     }
-  }, [task]);  
+
+    //@ts-ignore
+  }, [task]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -53,7 +55,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: name === "score" ? parseInt(value, 10) : value,
+      [name]: value,
     }));
   };
 
@@ -72,7 +74,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
           <div className="bg-white rounded-lg w-96 p-4">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">
-              {task ? "Edit Task" : "Create New Task"}
+                {task ? "Edit Task" : "Create New Task"}
               </h2>
               <button onClick={onClose} className="text-red-500">
                 &#10006;
@@ -193,9 +195,9 @@ const TaskModal: React.FC<TaskModalProps> = ({
                   onChange={handleChange}
                   className="mt-1 p-2 w-full border rounded-md"
                 >
-                  <option value="1">Easy</option>
-                  <option value="2">Medium</option>
-                  <option value="3">Hard</option>
+                  <option value="easy">Easy</option>
+                  <option value="medium">Medium</option>
+                  <option value="hard">Hard</option>
                 </select>
               </div>
               <div className="mb-4">
@@ -213,7 +215,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
                   className="mt-1 p-2 w-full border rounded-md"
                 >
                   <option value="todo">To Do</option>
-                  <option value="inProgress">In Progress</option>
+                  <option value="in progress">In Progress</option>
                   <option value="done">Done</option>
                 </select>
               </div>
